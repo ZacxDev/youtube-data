@@ -9,10 +9,11 @@ import (
 )
 
 type VideoPost struct {
-	ID       string `json:"id"`
-	Title    string `json:"title"`
-	EmbedURL string `json:"embedUrl"`
-	URL      string `json:"url"`
+	ID           string `json:"id"`
+	Title        string `json:"title"`
+	EmbedURL     string `json:"embedUrl"`
+	ThumbnailURL string `json:"thumbnailUrl"`
+	URL          string `json:"url"`
 }
 
 type Response struct {
@@ -92,11 +93,13 @@ func (f *YouTubeFetcher) FetchVideos(channelID string, page int) (*Response, err
 	for _, item := range playlistResponse.Items {
 		video := item.Snippet
 		videoID := video.ResourceId.VideoId
+
 		post := VideoPost{
-			ID:       videoID,
-			Title:    video.Title,
-			EmbedURL: fmt.Sprintf("https://www.youtube.com/embed/%s", videoID),
-			URL:      fmt.Sprintf("https://www.youtube.com/watch?v=%s", videoID),
+			ID:           videoID,
+			Title:        video.Title,
+			EmbedURL:     fmt.Sprintf("https://www.youtube.com/embed/%s", videoID),
+			ThumbnailURL: video.Thumbnails.Default.Url,
+			URL:          fmt.Sprintf("https://www.youtube.com/watch?v=%s", videoID),
 		}
 		response.Posts = append(response.Posts, post)
 	}
